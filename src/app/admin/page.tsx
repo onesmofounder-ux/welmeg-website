@@ -39,8 +39,10 @@ function ProjectRequestDeepLink({
 export default function AdminDashboard() {
 const router = useRouter();
 const [projectRequests, setProjectRequests] = useState([] as any[]);
-const [jobApplications, setJobApplications] = useState([] as any[]);
-const [skilledWorkers, setSkilledWorkers] = useState([] as any[]);
+  const [jobApplications, setJobApplications] = useState([] as any[]);
+  const [viewingCvId, setViewingCvId] = useState<string | null>(null);
+  const [viewCvError, setViewCvError] = useState("");
+  const [skilledWorkers, setSkilledWorkers] = useState([] as any[]);
 const [projectsList, setProjectsList] = useState([] as any[]);
 
   // Add Project form state
@@ -1420,8 +1422,26 @@ const logout = async () => {
   };
 
 
-
-
+  const handleViewCv = async (cvPath: string, jobId: string) => {
+    if (viewingCvId) return;
+    setViewingCvId(jobId);
+    setViewCvError("");
+    try {
+      const { data, error } = await supabase.storage
+        .from("cvs")
+        .createSignedUrl(cvPath, 60);
+      if (error) throw error;
+      if (data?.signedUrl) {
+        window.open(data.signedUrl, "_blank");
+      } else {
+        throw new Error("Could not generate signed URL.");
+      }
+    } catch {
+      setViewCvError("Failed to open CV. Please try again.");
+    } finally {
+      setViewingCvId(null);
+    }
+  };
 
 
 
@@ -1513,32 +1533,32 @@ const logout = async () => {
            />
          </Suspense>
 
-         <header className="admin-topbar">
-          <div className="topbar-left">
-            <button className="mobile-menu-toggle" aria-label="Toggle menu" onClick={() => setMobileSidebarOpen((open) => !open)}>☰</button>
-              <div className="topbar-title">
-                <h1 className="page-title">
-                  {activeSection === "dashboard"
-                    ? "Dashboard"
-                    : activeSection === "projects"
-                      ? "Projects"
-                      : activeSection === "requests"
-                        ? "Project Requests"
-                        : activeSection === "workers"
-                          ? "Skilled Workers"
-                          : activeSection === "clients"
-                            ? "Clients"
-                            : activeSection === "applications"
-                              ? "Job Applications"
-                              : activeSection === "reports"
-                                ? "Reports"
-                                : activeSection === "settings"
-                                  ? "Settings"
-                                  : "Dashboard"}
-                </h1>
-                <p className="page-sub">Welcome to WELMEG Admin Panel</p>
-              </div>
-          </div>
+          <header className="admin-topbar">
+           <div className="topbar-left">
+             <button className="mobile-menu-toggle" aria-label="Toggle menu" onClick={() => setMobileSidebarOpen((open) => !open)}>☰</button>
+               <div className="topbar-title" style={{ borderLeft: "3px solid #d4af37", paddingLeft: 12 }}>
+                 <h1 className="page-title" style={{ fontSize: 17, fontWeight: 800, letterSpacing: "-0.2px" }}>
+                   {activeSection === "dashboard"
+                     ? "Dashboard"
+                     : activeSection === "projects"
+                       ? "Projects"
+                       : activeSection === "requests"
+                         ? "Project Requests"
+                         : activeSection === "workers"
+                           ? "Skilled Workers"
+                           : activeSection === "clients"
+                             ? "Clients"
+                             : activeSection === "applications"
+                               ? "Job Applications"
+                               : activeSection === "reports"
+                                 ? "Reports"
+                                 : activeSection === "settings"
+                                   ? "Settings"
+                                   : "Dashboard"}
+                 </h1>
+                 <p className="page-sub" style={{ marginTop: 2 }}>Welcome to WELMEG Admin Panel</p>
+               </div>
+           </div>
 
           <div className="topbar-right">
             {/* Notification center component (uses same visual bell but adds badge and dropdown) */}
@@ -1907,7 +1927,19 @@ const logout = async () => {
                             <td>{job.status}</td>
                             <td>
                               <div className="table-actions">
-                                {job.cv_url && <a className="cv-btn" href={job.cv_url} target="_blank">View CV</a>}
+                                {job.cv_url ? (
+  <button
+    className="cv-btn"
+    type="button"
+    onClick={() => handleViewCv(job.cv_url, job.id)}
+    disabled={viewingCvId === job.id}
+    title="View CV"
+  >
+    {viewingCvId === job.id ? "Opening..." : "View CV"}
+  </button>
+) : (
+  <span className="muted">No CV</span>
+)}
                                 <select value={job.status} onChange={(e)=> updateJobStatus(job.id, e.target.value)}>
                                   <option>Pending</option>
                                   <option>Reviewing</option>
@@ -3576,6 +3608,70 @@ const logout = async () => {
               </div>
               <div className="confirm-actions">
                 <button className="btn-secondary" onClick={closeManageUsersModal}>Close</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {companyLogoModalOpen && (
+          <div className="modal-overlay" onClick={closeCompanyLogoModal}>
+            <div className="confirm-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 480 }}>
+              <h3 style={{ margin: 0, fontSize: 16, color: "var(--admin-text)" }}>Change Company Logo</h3>
+              <div style={{ fontSize: 13, color: "var(--admin-text-secondary)", lineHeight: 1.6, marginTop: 8 }}>
+                Upload a new logo for your company profile. Supported formats: PNG, JPG, WEBP. Max size: 2MB.
+              </div>
+              <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>
+                <div
+                  onClick={() => companyLogoInputRef.current?.click()}
+                  style={{
+                    width: 160,
+                    height: 160,
+                    borderRadius: 12,
+                    border: "2px dashed var(--admin-border)",
+                    background: "var(--admin-surface)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    overflow: "hidden",
+                    flexShrink: 0,
+                  }}
+                >
+                  {companyLogoPreview || companyProfile.logoUrl ? (
+                    <img
+                      src={companyLogoPreview || companyProfile.logoUrl}
+                      alt="Logo Preview"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--admin-text-secondary)" strokeWidth="1.5">
+                      <rect x="3" y="3" width="18" height="18" rx="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <path d="M21 15l-5-5L5 21" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div style={{ marginTop: 12, textAlign: "center", fontSize: 12, color: "var(--admin-text-secondary)" }}>
+                Click the area above to select an image
+              </div>
+              <input
+                ref={companyLogoInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={handleCompanyLogoFileChange}
+                style={{ display: "none" }}
+              />
+              {companyLogoError && (
+                <div style={{ marginTop: 10, fontSize: 13, color: "#b91c1c", padding: "8px 10px", borderRadius: 6, background: "#fef2f2", border: "1px solid #fecaca" }}>
+                  {companyLogoError}
+                </div>
+              )}
+              <div className="confirm-actions">
+                <button className="btn-secondary" onClick={closeCompanyLogoModal} disabled={companyLogoUploading}>Cancel</button>
+                <button className="btn-primary" onClick={handleCompanyLogoUpload} disabled={companyLogoUploading || !companyLogoPreview}>
+                  {companyLogoUploading ? "Uploading..." : "Upload Logo"}
+                </button>
               </div>
             </div>
           </div>
