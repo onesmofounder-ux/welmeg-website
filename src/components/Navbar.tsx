@@ -12,13 +12,13 @@ export default function Navbar() {
 
      <Link href="/" className="branding">
 
-   <Image
-    src="/images/logo.png"
-    alt="WELMEG Logo"
-    width={50}
-    height={50}
-    className="branding-logo"
-  />
+    <Image
+     src="/images/welmeg_logo.png"
+     alt="WELMEG Logo"
+     width={50}
+     height={50}
+     className="branding-logo"
+   />
 
   <div className="branding-text">
     <span className="branding-name">WELMEG</span>

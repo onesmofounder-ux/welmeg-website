@@ -2758,7 +2758,7 @@ const logout = async () => {
                                   <div style={{ padding: 28, fontFamily: "Arial, Helvetica, sans-serif", fontSize: 13, lineHeight: 1.8, color: "#07132a", minHeight: 520 }}>
                                     {/* Document header */}
                                     <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, paddingBottom: 14, borderBottom: "2px solid #d4af37" }}>
-                                      <img src="/images/logo.png" alt="WELMEG" style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: "2px solid #d4af37" }} />
+                                       <img src="/images/welmeg_logo.png" alt="WELMEG" style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", border: "2px solid #d4af37", overflow: "hidden", display: "block" }} />
                                       <div>
                                         <div style={{ fontSize: 17, fontWeight: 800, color: "#0b1f3a", letterSpacing: 0.5 }}>WELMEG Solution Company Limited</div>
                                         <div style={{ fontSize: 11, color: "#6b7280", fontStyle: "italic" }}>Building New Vision, Building New World</div>
