@@ -1666,8 +1666,8 @@ const logout = async () => {
                   <h3>Add New Project</h3>
                 </div>
                 <div className="card-body">
-                  <form onSubmit={handleAddProject} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                   <form onSubmit={handleAddProject} className="add-project-form">
+                     <div className="add-project-grid">
                       <input
                         type="text"
                         placeholder="Project Title *"
@@ -1683,7 +1683,7 @@ const logout = async () => {
                         required
                       />
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                     <div className="add-project-grid">
                       <input
                         type="text"
                         placeholder="Location *"
@@ -3246,7 +3246,7 @@ const logout = async () => {
                                   <label style={{ fontSize: 12, color: "var(--admin-text-secondary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Physical Address</label>
                                   <input type="text" value={companyProfile.address} onChange={(e) => updateCompanyField("address", e.target.value)} style={{ padding: "8px 10px", border: "1px solid var(--admin-border)", borderRadius: 6, fontSize: 13, background: "var(--admin-input-bg)", color: "var(--admin-input-text)" }} />
                                 </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                                 <div className="profile-form-grid">
                                   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                                     <label style={{ fontSize: 12, color: "var(--admin-text-secondary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>City</label>
                                     <input type="text" value={companyProfile.city} onChange={(e) => updateCompanyField("city", e.target.value)} style={{ padding: "8px 10px", border: "1px solid var(--admin-border)", borderRadius: 6, fontSize: 13, background: "var(--admin-input-bg)", color: "var(--admin-input-text)" }} />
@@ -3290,7 +3290,7 @@ const logout = async () => {
 
                               <div style={{ fontSize: 12, fontWeight: 600, color: "var(--admin-text-secondary)", textTransform: "uppercase", letterSpacing: "0.04em", marginTop: 4 }}>Legal & Registration Information</div>
                               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                                 <div className="profile-form-grid">
                                   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                                     <label style={{ fontSize: 12, color: "var(--admin-text-secondary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Registration Number</label>
                                     <input type="text" value={companyProfile.registrationNumber} onChange={(e) => updateCompanyField("registrationNumber", e.target.value)} placeholder="Optional" style={{ padding: "8px 10px", border: "1px solid var(--admin-border)", borderRadius: 6, fontSize: 13, background: "var(--admin-input-bg)", color: "var(--admin-input-text)" }} />
@@ -3300,7 +3300,7 @@ const logout = async () => {
                                     <input type="text" value={companyProfile.tin} onChange={(e) => updateCompanyField("tin", e.target.value)} placeholder="Optional" style={{ padding: "8px 10px", border: "1px solid var(--admin-border)", borderRadius: 6, fontSize: 13, background: "var(--admin-input-bg)", color: "var(--admin-input-text)" }} />
                                   </div>
                                 </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                                 <div className="profile-form-grid">
                                   <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                                     <label style={{ fontSize: 12, color: "var(--admin-text-secondary)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Business License Number</label>
                                     <input type="text" value={companyProfile.businessLicense} onChange={(e) => updateCompanyField("businessLicense", e.target.value)} placeholder="Optional" style={{ padding: "8px 10px", border: "1px solid var(--admin-border)", borderRadius: 6, fontSize: 13, background: "var(--admin-input-bg)", color: "var(--admin-input-text)" }} />
